@@ -1,0 +1,76 @@
+﻿<mah:MetroWindow
+        x:Class="MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:FinalFOApp" xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="750" Width="1200"
+        WindowStartupLocation="CenterScreen">
+    <Window.Resources>
+        <DataTemplate DataType="{x:Type local:FriendDetailViewModel}">
+            <local:FriendDetailView/>
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type local:MeetingDetailViewModel}">
+            <local:MeetingDetailView/>
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type local:ProgrammingLanguageDetailViewModel}">
+            <local:ProgrammingLanguagesDetailView/>
+        </DataTemplate>
+    </Window.Resources>
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="200"/>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+
+        <local:NavigationView Grid.Row="1" DataContext="{Binding NavigationViewModel}"/>
+        <TabControl Grid.Column="1"
+                    Grid.Row="1"
+                    ItemsSource="{Binding DetailViewModels}"
+                    SelectedItem="{Binding SelectedDetailViewModel}">
+            <TabControl.ItemContainerStyle>
+                <Style TargetType="TabItem"
+                       BasedOn="{StaticResource {x:Type TabItem}}">
+                    <Setter Property="Background" Value="#333333"/>
+                    <Setter Property="BorderBrush" Value="Transparent"/>
+                    <Setter Property="BorderThickness" Value="2"/>
+                </Style>
+            </TabControl.ItemContainerStyle>
+            <TabControl.ItemTemplate>
+                <DataTemplate>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="{Binding Title}"/>
+                        <TextBlock Text="*" Visibility="{Binding HasChanges, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                        <Button Command="{Binding CloseDetailViewCommand}"
+                                VerticalContentAlignment="Top" Margin="2 0 2 2"
+                                Content="X" FontSize="20"
+                                Style="{StaticResource MahApps.Styles.Button.Chromeless}"/>
+                    </StackPanel>
+                </DataTemplate>
+            </TabControl.ItemTemplate>
+        </TabControl>
+        <Menu>
+            <MenuItem Header="Create"
+                  Grid.ColumnSpan="2"
+                  FontSize="20">
+                    <MenuItem Header="Add New Friend"
+                              Command="{Binding CreateNewDetailCommand}"
+                              CommandParameter="{x:Type local:FriendDetailViewModel}"/>
+                    <MenuItem Header="Add New Meeting"       
+                              Command="{Binding CreateNewDetailCommand}"
+                              CommandParameter="{x:Type local:MeetingDetailViewModel}"/>
+             </MenuItem>
+            <MenuItem Header="Edit"
+                      FontSize="20"
+                      Command="{Binding OpenSingleDetailViewCommand}"
+                      CommandParameter="{x:Type local:ProgrammingLanguageDetailViewModel}"/>
+
+        </Menu>
+    </Grid>
+</mah:MetroWindow>
